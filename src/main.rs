@@ -1,10 +1,10 @@
 struct Endpoint {
-    name: String,
-    uri: String,
-    methods: Vec<String>,
+    name: &'static str,
+    uri: &'static str,
+    methods: Vec<&'static str>,
 }
 impl Endpoint {
-    fn implements_method(&self, method: String) -> bool {
+    fn implements_method(&self, method: &str) -> bool {
         self.methods.contains(&method)
     }
 }
@@ -12,20 +12,20 @@ impl Endpoint {
 #[test]
 fn implements_method() {
     let e = Endpoint {
-        name: "foo".to_string(),
-        uri: "/foo".to_string(),
-        methods: vec!["GET".to_string()],
+        name: "foo",
+        uri: "/foo",
+        methods: vec!["GET"],
     };
-    assert_eq!(e.implements_method(String::from("GET")), true);
+    assert_eq!(e.implements_method("GET"), true);
 }
 #[test]
 fn doesnt_implement_method() {
     let e = Endpoint {
-        name: String::from("foo"),
-        uri: String::from("/foo"),
-        methods: vec![String::from("GET")],
+        name: "foo",
+        uri: "/foo",
+        methods: vec!["GET"],
     };
-    assert_eq!(e.implements_method(String::from("POST")), false);
+    assert_eq!(e.implements_method("POST"), false);
 }
 
 fn main() {
