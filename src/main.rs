@@ -12,9 +12,9 @@ impl Endpoint {
 #[test]
 fn implements_method() {
     let e = Endpoint {
-        name: String::from("foo"),
-        uri: String::from("/foo"),
-        methods: vec![String::from("GET")],
+        name: "foo".to_string(),
+        uri: "/foo".to_string(),
+        methods: vec!["GET".to_string()],
     };
     assert_eq!(e.implements_method(String::from("GET")), true);
 }
