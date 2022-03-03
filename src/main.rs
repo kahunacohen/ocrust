@@ -18,6 +18,15 @@ fn implements_method() {
     };
     assert_eq!(e.implements_method(String::from("GET")), true);
 }
+#[test]
+fn doesnt_implement_method() {
+    let e = Endpoint {
+        name: String::from("foo"),
+        uri: String::from("/foo"),
+        methods: vec![String::from("GET")],
+    };
+    assert_eq!(e.implements_method(String::from("POST")), false);
+}
 
 fn main() {
     println!("Hello world!")
