@@ -1,20 +1,21 @@
-fn normalize_uri(uri: &str) -> &str {
+fn normalize_uri(uri: String) -> String {
+    let mut ret = uri.clone();
     if !uri.ends_with("/") {
-        return format!("{}/", uri);
-    } else {
-        return uri.to_string();
+        ret = format!("{}/", ret);
     }
+    if !uri.starts_with("/") {
+        ret = format!("/{}", ret);
+    }
+    ret
 }
 
-pub struct Endpoint <'a> {
-    name: String,
-    uri: &'a str,
+pub struct Endpoint {
+    uri: String,
     methods: Vec<String>,
 }
-impl Endpoint <'_> {
-    fn new(name: String, uri: &str, methods: Vec<String>) -> Endpoint {
+impl Endpoint {
+    fn new(uri: String, methods: Vec<String>) -> Endpoint {
         Endpoint {
-            name,
             uri: normalize_uri(uri),
             methods,
         }
@@ -30,10 +31,9 @@ mod test {
     use super::*;
 
     #[test]
-    fn new_adds_trailing_slash_to_uri() {
+    fn new_normalizes_uri() {
         let e = Endpoint::new(
             "foo".to_string(),
-            "/foo",
             vec!["GET".to_string()],
         );
         assert_eq!(e.uri, "/foo/");
@@ -42,8 +42,7 @@ mod test {
     #[test]
     fn implements_method() {
         let e = Endpoint {
-            name: "foo".to_string(),
-            uri: "/foo",
+            uri: "/foo".to_string(),
             methods: vec!["GET".to_string()],
         };
         assert_eq!(e.implements_method("GET".to_string()), true);
@@ -52,8 +51,7 @@ mod test {
     #[test]
     fn doesnt_implement_method() {
         let e = Endpoint {
-            name: "foo".to_string(),
-            uri: "/foo",
+            uri: "/foo".to_string(),
             methods: vec!["GET".to_string()],
         };
         assert_eq!(e.implements_method("POST".to_string()), false);
