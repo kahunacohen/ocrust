@@ -1,3 +1,5 @@
+mod foo;
+
 struct Endpoint {
     name: String,
     uri: String,
@@ -29,5 +31,7 @@ fn doesnt_implement_method() {
 }
 
 fn main() {
-    println!("Hello world!")
-}
+    println!("Hello world!");
+    foo::say_foo();
+
+}   
