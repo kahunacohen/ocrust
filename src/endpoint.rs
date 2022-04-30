@@ -1,3 +1,4 @@
+
 fn normalize_uri(uri: String) -> String {
     let mut ret = uri.clone();
     if !uri.ends_with("/") {
@@ -10,18 +11,18 @@ fn normalize_uri(uri: String) -> String {
 }
 
 pub struct Endpoint {
-    uri: String,
-    methods: Vec<String>,
+    pub uri: String,
+    pub methods: Vec<String>,
 }
 impl Endpoint {
-    fn new(uri: String, methods: Vec<String>) -> Endpoint {
+    pub fn new(uri: String, methods: Vec<String>) -> Endpoint {
         Endpoint {
             uri: normalize_uri(uri),
             methods,
         }
     }
 
-    fn implements_method(&self, method: String) -> bool {
+    pub fn implements_method(&self, method: String) -> bool {
         self.methods.contains(&method)
     }
 }
