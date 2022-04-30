@@ -1,15 +1,3 @@
-
-fn normalize_uri(uri: String) -> String {
-    let mut ret = uri.clone();
-    if !uri.ends_with("/") {
-        ret = format!("{}/", ret);
-    }
-    if !uri.starts_with("/") {
-        ret = format!("/{}", ret);
-    }
-    ret
-}
-
 pub struct Endpoint {
     pub uri: String,
     pub methods: Vec<String>,
@@ -26,6 +14,16 @@ impl Endpoint {
         self.methods.contains(&method)
     }
 }
+fn normalize_uri(uri: String) -> String {
+    let mut ret = uri.clone();
+    if !uri.ends_with("/") {
+        ret = format!("{}/", ret);
+    }
+    if !uri.starts_with("/") {
+        ret = format!("/{}", ret);
+    }
+    ret
+}
 
 #[cfg(test)]
 mod test {
@@ -33,10 +31,7 @@ mod test {
 
     #[test]
     fn new_normalizes_uri() {
-        let e = Endpoint::new(
-            "foo".to_string(),
-            vec!["GET".to_string()],
-        );
+        let e = Endpoint::new("foo".to_string(), vec!["GET".to_string()]);
         assert_eq!(e.uri, "/foo/");
     }
 
