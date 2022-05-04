@@ -19,7 +19,7 @@ fn normalize_uri(s: String) -> String {
     s.strip_suffix("/")
         .and_then(|s| s.strip_prefix("/"))
         .unwrap_or(&s)
-        .to_owned()
+        .to_owned().map(|s| format!("/{s}/"))
 }
 
 // fn normalize_uri2(uri: &str) -> String {
