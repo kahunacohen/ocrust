@@ -18,27 +18,24 @@ impl Endpoint {
 fn normalize_uri(s: String) -> String {
     s.strip_suffix("/")
         .and_then(|s| s.strip_prefix("/"))
-        .unwrap_or(&s)
-        .to_owned().map(|s| format!("/{s}/"))
+        .map(|s| format!("/{s}/"))
+        .unwrap_or(s)
+        .to_owned()
 }
 
-// fn normalize_uri2(uri: &str) -> String {
-//     match uri.strip_suffix("/") {
-//         Some(s) => println!("hiiiiiiiiiiii"),
-//         None => {
-
-//         },
-//     }
-//     "/foo/".to_string()
-// }
 #[cfg(test)]
 mod test {
     use super::*;
 
     #[test]
-    fn endpoint_strips_slashes() {
+    fn endpoint_handles_leading_trailing_slash() {
         let e = Endpoint::new(String::from("/foo/"), vec!["GET".to_string()]);
-        assert_eq!(e.uri, "foo");
+        assert_eq!(e.uri, "/foo/");
+    }
+    #[test]
+    fn endpoint_handles_no_slashes() {
+        let e = Endpoint::new(String::from("foo"), vec!["GET".to_string()]);
+        assert_eq!(e.uri, "/foo/");
     }
 
     #[test]
