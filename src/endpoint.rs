@@ -14,25 +14,31 @@ impl Endpoint {
         self.methods.contains(&method)
     }
 }
-fn normalize_uri(uri: String) -> String {
-    let mut ret = uri.clone();
-    if !uri.ends_with("/") {
-        ret = format!("{}/", ret);
-    }
-    if !uri.starts_with("/") {
-        ret = format!("/{}", ret);
-    }
-    ret
+
+fn normalize_uri(s: String) -> String {
+    s.strip_suffix("/")
+        .and_then(|s| s.strip_prefix("/"))
+        .unwrap_or(&s)
+        .to_owned()
 }
 
+// fn normalize_uri2(uri: &str) -> String {
+//     match uri.strip_suffix("/") {
+//         Some(s) => println!("hiiiiiiiiiiii"),
+//         None => {
+
+//         },
+//     }
+//     "/foo/".to_string()
+// }
 #[cfg(test)]
 mod test {
     use super::*;
 
     #[test]
-    fn new_normalizes_uri() {
-        let e = Endpoint::new("foo".to_string(), vec!["GET".to_string()]);
-        assert_eq!(e.uri, "/foo/");
+    fn endpoint_strips_slashes() {
+        let e = Endpoint::new(String::from("/foo/"), vec!["GET".to_string()]);
+        assert_eq!(e.uri, "foo");
     }
 
     #[test]
