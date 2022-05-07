@@ -46,7 +46,6 @@ mod test {
         let e = Endpoint::new(String::from("foo"), vec!["GET".to_string()]);
         assert_eq!(e.uri, "/foo/");
     }
-
     #[test]
     fn implements_method() {
         let e = Endpoint {
@@ -55,7 +54,6 @@ mod test {
         };
         assert_eq!(e.implements_method("GET".to_string()), true);
     }
-
     #[test]
     fn doesnt_implement_method() {
         let e = Endpoint {
