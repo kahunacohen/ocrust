@@ -1,3 +1,5 @@
+use regex::Regex;
+
 pub struct Endpoint {
     pub uri: String,
     pub methods: Vec<String>,
@@ -5,7 +7,7 @@ pub struct Endpoint {
 impl Endpoint {
     pub fn new(uri: String, methods: Vec<String>) -> Endpoint {
         Endpoint {
-            uri: normalize_uri(uri),
+            uri: normalize_uri(&uri),
             methods,
         }
     }
@@ -15,18 +17,25 @@ impl Endpoint {
     }
 }
 
-fn normalize_uri(s: String) -> String {
-    s.strip_suffix("/")
-        .and_then(|s| s.strip_prefix("/"))
-        .map(|s| format!("/{s}/"))
-        .unwrap_or(s)
-        .to_owned()
+fn normalize_uri(uri: &String) -> String {
+    let re = Regex::new(r"^/|/$").unwrap();
+    format!("/{}/", re.replace_all(uri, ""))
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
 
+    #[test]
+    fn endpoint_handles_leading_slash() {
+        let e = Endpoint::new(String::from("/foo"), vec!["GET".to_string()]);
+        assert_eq!(e.uri, "/foo/");
+    }
+    #[test]
+    fn endpoint_handles_trailing_slash() {
+        let e = Endpoint::new(String::from("foo/"), vec!["GET".to_string()]);
+        assert_eq!(e.uri, "/foo/");
+    }
     #[test]
     fn endpoint_handles_leading_trailing_slash() {
         let e = Endpoint::new(String::from("/foo/"), vec!["GET".to_string()]);
