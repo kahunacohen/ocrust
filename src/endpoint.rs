@@ -1,4 +1,4 @@
-use regex::Regex;
+use crate::functions;
 
 pub struct Endpoint {
     pub uri: String,
@@ -7,7 +7,7 @@ pub struct Endpoint {
 impl Endpoint {
     pub fn new(uri: String, methods: Vec<String>) -> Endpoint {
         Endpoint {
-            uri: normalize_uri(&uri),
+            uri: functions::normalize_uri(&uri),
             methods,
         }
     }
@@ -15,11 +15,6 @@ impl Endpoint {
     pub fn implements_method(&self, method: String) -> bool {
         self.methods.contains(&method)
     }
-}
-
-fn normalize_uri(uri: &String) -> String {
-    let re = Regex::new(r"^/|/$").unwrap();
-    format!("/{}/", re.replace_all(uri, ""))
 }
 
 #[cfg(test)]
