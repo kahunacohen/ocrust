@@ -30,7 +30,7 @@ mod test {
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
                 "/opportunities".to_string(),
-                HashMap::from([("Mercury".to_string(), "0.4".to_string())]),
+                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
             )],
         );
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com/opportunities");

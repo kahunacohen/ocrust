@@ -9,10 +9,10 @@ use crate::functions;
 // a payload.
 pub struct Endpoint<P> {
     pub uri: String,
-    pub methods: HashMap<String, P>,
+    pub methods: HashMap<String, Option<P>>,
 }
 impl<P> Endpoint<P> {
-    pub fn new(uri: String, methods: HashMap<String, P>) -> Endpoint<P> {
+    pub fn new(uri: String, methods: HashMap<String, Option<P>>) -> Endpoint<P> {
         Endpoint {
             uri: functions::normalize_uri(&uri),
             methods,
@@ -32,7 +32,7 @@ mod test {
     fn endpoint_handles_leading_slash() {
         let e = Endpoint::new(
             String::from("/foo"),
-            HashMap::from([("Mercury".to_string(), "bar".to_string())]),
+            HashMap::from([("GET".to_string(), Some("bar".to_string()))]),
         );
         assert_eq!(e.uri, "/foo/");
     }
