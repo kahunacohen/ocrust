@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use crate::functions;
 
-pub struct Endpoint<K, V> {
+pub struct Endpoint<V> {
     pub uri: String,
-    pub methods: HashMap<K, V>,
+    pub methods: HashMap<String, V>,
 }
-impl<K, V> Endpoint<K, V> {
-    pub fn new(uri: String, methods: HashMap<K, V>) -> Endpoint<K, V> {
+impl<V> Endpoint<V> {
+    pub fn new(uri: String, methods: HashMap<String, V>) -> Endpoint<V> {
         Endpoint {
             uri: functions::normalize_uri(&uri),
             methods,
