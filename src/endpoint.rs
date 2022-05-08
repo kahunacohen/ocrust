@@ -2,12 +2,12 @@ use std::collections::HashMap;
 
 use crate::functions;
 
-pub struct Endpoint {
+pub struct Endpoint<K, V> {
     pub uri: String,
-    pub methods: HashMap<String, String>,
+    pub methods: HashMap<K, V>,
 }
-impl Endpoint {
-    pub fn new(uri: String, methods: HashMap<String, String>) -> Endpoint {
+impl<K, V> Endpoint<K, V> {
+    pub fn new(uri: String, methods: HashMap<K, V>) -> Endpoint<K, V> {
         Endpoint {
             uri: functions::normalize_uri(&uri),
             methods,
@@ -25,9 +25,10 @@ mod test {
 
     #[test]
     fn endpoint_handles_leading_slash() {
-        let e = Endpoint::new(String::from("/foo"), HashMap::from([
-            ("Mercury".to_string(), "bar".to_string()),
-        ]));
+        let e = Endpoint::new(
+            String::from("/foo"),
+            HashMap::from([("Mercury".to_string(), "bar".to_string())]),
+        );
         assert_eq!(e.uri, "/foo/");
     }
     // #[test]

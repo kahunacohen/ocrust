@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use crate::endpoint::Endpoint;
 use crate::functions;
 
-pub struct Server {
+pub struct Server<K, V> {
     pub base_url: String,
-    pub endpoints: Vec<Endpoint>,
+    pub endpoints: Vec<Endpoint<K, V>>,
 }
 
-impl Server {
-    pub fn new(base_url: String, endpoints: Vec<Endpoint>) -> Server {
+impl<K, V> Server<K, V> {
+    pub fn new(base_url: String, endpoints: Vec<Endpoint<K, V>>) -> Server<K, V> {
         Server {
             base_url: functions::normalize_url(base_url),
             endpoints,
@@ -30,9 +30,7 @@ mod test {
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
                 "/opportunities".to_string(),
-                HashMap::from([
-                    ("Mercury".to_string(), "0.4".to_string()),
-                ]),
+                HashMap::from([("Mercury".to_string(), "0.4".to_string())]),
             )],
         );
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com/opportunities");
