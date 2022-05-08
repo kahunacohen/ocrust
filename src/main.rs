@@ -1,6 +1,6 @@
 mod endpoint;
-mod server;
 mod functions;
+mod server;
 
 fn main() {
     println!("Hello world!");
