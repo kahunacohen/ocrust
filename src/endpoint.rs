@@ -2,12 +2,17 @@ use std::collections::HashMap;
 
 use crate::functions;
 
-pub struct Endpoint<V> {
+// Represents an API endpoint. The
+// generic parameter `P` stands for some kind
+// of payload. So the methods field is a vector
+// of hashmaps that map HTTP methods, "GET" etc. to
+// a payload.
+pub struct Endpoint<P> {
     pub uri: String,
-    pub methods: HashMap<String, V>,
+    pub methods: HashMap<String, P>,
 }
-impl<V> Endpoint<V> {
-    pub fn new(uri: String, methods: HashMap<String, V>) -> Endpoint<V> {
+impl<P> Endpoint<P> {
+    pub fn new(uri: String, methods: HashMap<String, P>) -> Endpoint<P> {
         Endpoint {
             uri: functions::normalize_uri(&uri),
             methods,

@@ -3,13 +3,13 @@ use std::collections::HashMap;
 use crate::endpoint::Endpoint;
 use crate::functions;
 
-pub struct Server<V> {
+pub struct Server<P> {
     pub base_url: String,
-    pub endpoints: Vec<Endpoint<V>>,
+    pub endpoints: Vec<Endpoint<P>>,
 }
 
-impl<V> Server<V> {
-    pub fn new(base_url: String, endpoints: Vec<Endpoint<V>>) -> Server<V> {
+impl<P> Server<P> {
+    pub fn new(base_url: String, endpoints: Vec<Endpoint<P>>) -> Server<P> {
         Server {
             base_url: functions::normalize_url(base_url),
             endpoints,
