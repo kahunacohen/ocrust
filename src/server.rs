@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::endpoint::Endpoint;
+use crate::endpoint::{Endpoint, Method};
 use crate::functions;
 
 pub struct Server<P> {
@@ -30,7 +30,7 @@ mod test {
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
                 "/opportunities".to_string(),
-                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
+                HashMap::from([(Method::GET, Some("x".to_string()))]),
             )],
         );
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com/opportunities");

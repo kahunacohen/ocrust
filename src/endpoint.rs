@@ -2,6 +2,15 @@ use std::collections::HashMap;
 
 use crate::functions;
 
+#[derive(Debug, PartialEq, Eq, Hash)]
+pub enum Method {
+    DELETE,
+    GET,
+    HEAD,
+    PATCH,
+    POST,
+    PUT,
+}
 // Represents an API endpoint. The
 // generic parameter `P` stands for some kind
 // of payload. So the methods field is a vector
@@ -9,10 +18,10 @@ use crate::functions;
 // a payload.
 pub struct Endpoint<P> {
     pub uri: String,
-    pub methods: HashMap<String, Option<P>>,
+    pub methods: HashMap<Method, Option<P>>,
 }
 impl<P> Endpoint<P> {
-    pub fn new(uri: String, methods: HashMap<String, Option<P>>) -> Endpoint<P> {
+    pub fn new(uri: String, methods: HashMap<Method, Option<P>>) -> Endpoint<P> {
         Endpoint {
             uri: functions::normalize_uri(&uri),
             methods,
@@ -32,7 +41,7 @@ mod test {
     fn endpoint_handles_leading_slash() {
         let e = Endpoint::new(
             String::from("/foo"),
-            HashMap::from([("GET".to_string(), Some("bar".to_string()))]),
+            HashMap::from([(Method::GET, Some("bar".to_string()))]),
         );
         assert_eq!(e.uri, "/foo/");
     }
