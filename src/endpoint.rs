@@ -4,12 +4,12 @@ use crate::functions;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Method {
-    DELETE,
     GET,
-    HEAD,
-    PATCH,
-    POST,
-    PUT,
+}
+
+// A "base" payload
+pub struct Payload {
+    data: Option<String>
 }
 // Represents an API endpoint. The
 // generic parameter `P` stands for some kind
@@ -39,27 +39,36 @@ mod test {
 
     #[test]
     fn endpoint_handles_leading_slash() {
-        let e = Endpoint::new(
+        let e: Endpoint<Payload> = Endpoint::new(
             String::from("/foo"),
-            HashMap::from([(Method::GET, Some("bar".to_string()))]),
+            HashMap::from([(Method::GET, None)]),
         );
         assert_eq!(e.uri, "/foo/");
     }
-    // #[test]
-    // fn endpoint_handles_trailing_slash() {
-    //     let e = Endpoint::new(String::from("foo/"), vec!["GET".to_string()]);
-    //     assert_eq!(e.uri, "/foo/");
-    // }
-    // #[test]
-    // fn endpoint_handles_leading_trailing_slash() {
-    //     let e = Endpoint::new(String::from("/foo/"), vec!["GET".to_string()]);
-    //     assert_eq!(e.uri, "/foo/");
-    // }
-    // #[test]
-    // fn endpoint_handles_no_slashes() {
-    //     let e = Endpoint::new(String::from("foo"), vec!["GET".to_string()]);
-    //     assert_eq!(e.uri, "/foo/");
-    // }
+    #[test]
+    fn endpoint_handles_trailing_slash() {
+        let e: Endpoint<Payload> = Endpoint::new(
+            String::from("/foo"),
+            HashMap::from([(Method::GET, None)]),
+        );
+        assert_eq!(e.uri, "/foo/");
+    }
+    #[test]
+    fn endpoint_handles_existing_leading_trailing_slash() {
+        let e: Endpoint<Payload> = Endpoint::new(
+            String::from("/foo/"),
+            HashMap::from([(Method::GET, None)]),
+        );
+        assert_eq!(e.uri, "/foo/");
+    }
+    #[test]
+    fn endpoint_handles_no_slashes() {
+        let e: Endpoint<Payload> = Endpoint::new(
+            String::from("foo"),
+            HashMap::from([(Method::GET, None)]),
+        );
+        assert_eq!(e.uri, "/foo/");
+    }
     // #[test]
     // fn implements_method() {
     //     let e = Endpoint {
