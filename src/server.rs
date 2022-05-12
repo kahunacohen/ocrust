@@ -30,6 +30,7 @@ mod test {
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
                 "/opportunities".to_string(),
+                "A test endpoint".to_string(),
                 HashMap::from([(Method::GET, Some("x".to_string()))]),
             )],
         );
