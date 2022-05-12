@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-
 use crate::endpoint::{Endpoint, Method};
 use crate::functions;
+use std::collections::HashMap;
+use ureq;
 
 pub struct Server<P> {
     pub base_url: String,
@@ -15,8 +15,12 @@ impl<P> Server<P> {
             endpoints,
         }
     }
+    fn request(&self, method: Method, uri: String) ->ureq::Response {
+        ureq::request("GET", "https://www.google.com").call()
+    }
+    /// Make an HTTP `GET` request to the given `uri`.
     pub fn get(&self, uri: String) -> String {
-        "foo".to_string()
+        self.request(Method::GET, uri)
     }
 }
 

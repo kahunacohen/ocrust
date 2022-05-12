@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::functions;
 
+/// Describes possible HTTP methods.
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub enum Method {
     GET,
@@ -22,6 +23,7 @@ pub enum Method {
 pub struct Payload {
     data: Option<String>,
 }
+
 /// Represents an API endpoint. The
 /// generic parameter `P` stands for some kind
 /// of payload. So the methods field is a vector
