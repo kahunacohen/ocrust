@@ -15,13 +15,12 @@ impl<P> Server<P> {
             endpoints,
         }
     }
-    fn request(&self, method: Method, uri: String) ->ureq::Response {
-        ureq::request("GET", "https://www.google.com").call()
+    fn request(&self, method: Method, uri: String) -> Result<ureq::Response, ureq::Error> {
+        ureq::request(&method.to_string(), "https://www.google.com").call()
     }
-    /// Make an HTTP `GET` request to the given `uri`.
-    pub fn get(&self, uri: String) -> String {
-        self.request(Method::GET, uri)
-    }
+    // pub fn get(&self, uri: String) -> String {
+    //     self.request(Method::GET, uri)
+    // }
 }
 
 #[cfg(test)]

@@ -1,14 +1,18 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt};
 
 use crate::functions;
 
 /// Describes possible HTTP methods.
-#[derive(Debug, PartialEq, Eq, Hash)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub enum Method {
     GET,
     POST,
 }
-
+impl fmt::Display for Method {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
 /// A "generic" payload we can use as a type parameter
 /// to Endpoint when instantiating. Otherwise the compiler is not
 /// happy. For example, when we instantiate an endpoint and assign it
