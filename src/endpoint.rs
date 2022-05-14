@@ -1,20 +1,7 @@
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap};
 
 use crate::functions;
 
-/// Describes possible HTTP methods. We can call
-/// `.to_string()` on a Method enum because `display` is
-/// implemented.
-#[derive(Debug, Eq, PartialEq, Hash)]
-pub enum Method {
-    GET,
-    POST,ß
-}
-impl fmt::Display for Method {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
 /// A "generic" payload we can use as a type parameter
 /// to Endpoint when instantiating. Otherwise the compiler is not
 /// happy. For example, when we instantiate an endpoint and assign it
@@ -23,7 +10,7 @@ impl fmt::Display for Method {
 /// ```
 /// let e: Endpoint<Payload> = Endpoint::new(
 ///     String::from("/foo"),
-///     HashMap::from([(Method::GET, None)]),
+///     HashMap::from([("GET", None)]),
 /// );
 /// ```
 pub struct Payload {
@@ -35,16 +22,26 @@ pub struct Payload {
 /// of payload. So the methods field is a vector
 /// of hashmaps that map HTTP methods, "GET" etc. to
 /// a payload.
-pub struct Endpoint<P> {
+pub struct Endpoint<'a, P> {
     pub description: String,
-    pub methods: HashMap<Method, Option<P>>,
+    pub methods: HashMap<&'a str, Option<P>>,
     pub uri: String,
 }
-impl<P> Endpoint<P> {
+impl<P> Endpoint<'_, P> {
+    /// Creates a new endpoint. E.g.:
+    /// ```
+    /// // An endpoint representing the URI `/foo`
+    /// // implementing `GET` with no payload.
+    /// let e: Endpoint<Payload> = Endpoint::new(
+    ///   String::from("/foo"),
+    ///   "A test endpoint".to_string(),
+    ///   HashMap::from([("GET", None)]),
+    /// );
+    /// ```
     pub fn new(
         uri: String,
         description: String,
-        methods: HashMap<Method, Option<P>>,
+        methods: HashMap<&str, Option<P>>,
     ) -> Endpoint<P> {
         Endpoint {
             description,
@@ -53,8 +50,8 @@ impl<P> Endpoint<P> {
         }
     }
     /// Whether the endpoint implements the passed HTTP method.
-    pub fn implements_method(&self, method: Method) -> bool {
-        self.methods.contains_key(&method)
+    pub fn implements_method(&self, method: &str) -> bool {
+        self.methods.contains_key(method)
     }
 }
 
@@ -67,7 +64,7 @@ mod test {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("/foo"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
         assert_eq!(e.uri, "/foo/");
     }
@@ -76,7 +73,7 @@ mod test {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("/foo"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
         assert_eq!(e.uri, "/foo/");
     }
@@ -85,7 +82,7 @@ mod test {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("/foo/"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
         assert_eq!(e.uri, "/foo/");
     }
@@ -94,7 +91,7 @@ mod test {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("foo"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
         assert_eq!(e.uri, "/foo/");
     }
@@ -103,17 +100,17 @@ mod test {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("foo"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
-        assert_eq!(e.implements_method(Method::GET), true);
+        assert_eq!(e.implements_method("GET"), true);
     }
     #[test]
     fn doesnt_implement_method() {
         let e: Endpoint<Payload> = Endpoint::new(
             String::from("foo"),
             "A test endpoint".to_string(),
-            HashMap::from([(Method::GET, None)]),
+            HashMap::from([("GET", None)]),
         );
-        assert_eq!(e.implements_method(Method::POST), false);
+        assert_eq!(e.implements_method("POST"), false);
     }
 }
