@@ -2,11 +2,13 @@ use std::{collections::HashMap, fmt};
 
 use crate::functions;
 
-/// Describes possible HTTP methods.
+/// Describes possible HTTP methods. We can call
+/// `.to_string()` on a Method enum because `display` is
+/// implemented.
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum Method {
     GET,
-    POST,
+    POST,ß
 }
 impl fmt::Display for Method {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
