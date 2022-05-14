@@ -1,4 +1,4 @@
-use crate::endpoint::{Endpoint};
+use crate::endpoint::Endpoint;
 use crate::functions;
 use std::collections::HashMap;
 use ureq;

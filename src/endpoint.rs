@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
 use crate::functions;
 
@@ -38,11 +38,7 @@ impl<P> Endpoint<'_, P> {
     ///   HashMap::from([("GET", None)]),
     /// );
     /// ```
-    pub fn new(
-        uri: String,
-        description: String,
-        methods: HashMap<&str, Option<P>>,
-    ) -> Endpoint<P> {
+    pub fn new(uri: String, description: String, methods: HashMap<&str, Option<P>>) -> Endpoint<P> {
         Endpoint {
             description,
             methods,
