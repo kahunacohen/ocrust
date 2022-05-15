@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use regex::Regex;
+
 use crate::functions;
 
 /// A "generic" payload we can use as a type parameter
@@ -31,22 +33,23 @@ impl<P> Endpoint<'_, P> {
     /// Creates a new endpoint. E.g.:
     /// ```
     /// // An endpoint representing the URI `/foo`
-    /// // implementing `GET` with no payload.
-    /// let e: Endpoint<Payload> = Endpoint::new(
-    ///   String::from("/foo"),
-    ///   "A test endpoint".to_string(),
-    ///   HashMap::from([("GET", None)]),
-    /// );
+    /// //implementing `GET` with no payload.
+    ///  let e: Endpoint<Payload> = Endpoint::new(
+    ///    "/foo",
+    ///    "A test endpoint",
+    ///    HashMap::from([("GET", None)])
+    ///  );
     /// ```
     pub fn new<'a>(
         uri: &'a str,
         description: &'a str,
         methods: HashMap<&'a str, Option<P>>,
     ) -> Endpoint<'a, P> {
+        let re = Regex::new(r"^/|/$").unwrap();
         Endpoint {
             description,
             methods,
-            uri: functions::normalize_uri(uri),
+            uri: format!("/{}/", re.replace_all(uri, "")),
         }
     }
     /// Whether the endpoint implements the passed HTTP method.
