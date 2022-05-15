@@ -32,8 +32,8 @@ mod test {
         let server = Server::new(
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
-                "/opportunities".to_string(),
-                "A test endpoint".to_string(),
+                "/opportunities",
+                "A test endpoint",
                 HashMap::from([("GET", Some("x".to_string()))]),
             )],
         );
