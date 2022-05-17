@@ -28,6 +28,7 @@ pub struct Endpoint<'a, P> {
     pub description: &'a str,
     pub methods: HashMap<&'a str, Option<P>>,
     pub uri: String,
+    url: String,
 }
 impl<P> Endpoint<'_, P> {
     /// Creates a new endpoint. E.g.:
@@ -50,6 +51,7 @@ impl<P> Endpoint<'_, P> {
             description,
             methods,
             uri: format!("/{}/", re.replace_all(uri, "")),
+            url: "https://www.google.com".to_string(),
         }
     }
     /// Whether the endpoint implements the passed HTTP method.
