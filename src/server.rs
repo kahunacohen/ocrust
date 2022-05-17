@@ -15,7 +15,7 @@ pub struct Server<'a, P> {
 pub struct ResponseError {
     // As opposed to a 404, this means the endpoint doesn't exist
     // in the server instance.
-    endpoint_doesnt_exit: bool,
+    no_endpoint: bool,
     status_code: Option<u16>,
     status_text: Option<String>,
     url: String,
@@ -51,23 +51,28 @@ impl<P> Server<'_, P> {
     fn request(&self, method: &str, uri: String) -> Result<ureq::Response, ResponseError> {
         println!("{}", uri);
         for endpoint in &self.endpoints {
-            println!("{}", endpoint.uri);
+            // Interate through server's endpoints and only make request if endpoint
+            // exists.
             if uri == endpoint.uri {
-                return match ureq::request(&method, "https://www.google.com").call() {
+                return match ureq::request(&method, "https://www.google.com/foo").call() {
                     Ok(response) => Ok(response),
-                    Err(err) => {
-                        return Err(ResponseError {
-                            endpoint_doesnt_exit: false,
-                            status_code: Some(404),
-                            status_text: Some("Shit".to_string()),
-                            url: "https://www.google.com".to_string(),
-                        })
-                    }
+                    Err(ureq::Error::Status(code, response)) => Err(ResponseError {
+                        no_endpoint: false,
+                        status_code: Some(code),
+                        status_text: Some(response.status_text().to_string()),
+                        url: response.get_url().to_string(),
+                    }),
+                    _ => Err(ResponseError {
+                        no_endpoint: false,
+                        status_code: None,
+                        status_text: None,
+                        url: "foo".to_string(),
+                    }),
                 };
             }
         }
         return Err(ResponseError {
-            endpoint_doesnt_exit: true,
+            no_endpoint: true,
             status_code: None,
             status_text: None,
             url: "https://www.google.com".to_string(),
@@ -99,8 +104,7 @@ mod test {
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com/opportunities");
     }
     #[test]
-
-    fn request() {
+    fn request_succeeds() {
         let server = Server::new(
             "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
             vec![Endpoint::new(
@@ -114,5 +118,24 @@ mod test {
             .unwrap();
         assert_eq!(resp.status(), 200);
         println!("{:?}", resp.get_url());
+    }
+    #[test]
+    fn request_fails_bad_status_code() {
+        let server = Server::new(
+            "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
+            vec![Endpoint::new(
+                "/opportunities/",
+                "A test endpoint",
+                HashMap::from([("GET", Some("x".to_string()))]),
+            )],
+        );
+        match server.request("GET", String::from("/opportunities/")) {
+            Ok(_) => panic!("request should have failed"),
+            Err(err) => {
+                assert_eq!(err.no_endpoint, false);
+                assert_eq!(err.status_code, Some(404));
+                assert_eq!(err.status_text, Some("Not Found".to_string()))
+            }
+        }
     }
 }
