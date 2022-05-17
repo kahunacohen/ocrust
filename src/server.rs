@@ -1,7 +1,6 @@
 use crate::endpoint::Endpoint;
 use crate::functions;
 use serde::Deserialize;
-use std::io::Write;
 use std::{collections::HashMap, fmt};
 use ureq;
 pub struct Server<'a, P> {
@@ -24,7 +23,7 @@ pub struct ResponseError {
 
 impl fmt::Display for ResponseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        let err_msg = match self.status_text {
+        return match &self.status_text {
             Some(txt) if txt != "OK" => write!(
                 f,
                 "The {} returned {}, status code: {}",
@@ -39,8 +38,6 @@ impl fmt::Display for ResponseError {
             ),
             _ => write!(f, "undefined error calling {}", self.url),
         };
-
-        write!(f, "{}", err_msg)
     }
 }
 
@@ -56,10 +53,25 @@ impl<P> Server<'_, P> {
         for endpoint in &self.endpoints {
             println!("{}", endpoint.uri);
             if uri == endpoint.uri {
-                let call_result = ureq::request(&method, "https://www.google.com").call();
-                
+                return match ureq::request(&method, "https://www.google.com").call() {
+                    Ok(response) => Ok(response),
+                    Err(err) => {
+                        return Err(ResponseError {
+                            endpoint_doesnt_exit: false,
+                            status_code: Some(404),
+                            status_text: Some("Shit".to_string()),
+                            url: "https://www.google.com".to_string(),
+                        })
+                    }
+                };
             }
         }
+        return Err(ResponseError {
+            endpoint_doesnt_exit: true,
+            status_code: None,
+            status_text: None,
+            url: "https://www.google.com".to_string(),
+        });
 
         //return ureq::ErrorKind::InvalidUrl(format!("No endpoint found with URI: {}", uri))
     }
