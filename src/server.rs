@@ -49,12 +49,12 @@ impl<P> Server<'_, P> {
         }
     }
     fn request(&self, method: &str, uri: String) -> Result<ureq::Response, ResponseError> {
-        println!("{}", uri);
+        let url = format!("{}{}", self.base_url, uri);
         for endpoint in &self.endpoints {
             // Interate through server's endpoints and only make request if endpoint
             // exists.
             if uri == endpoint.uri {
-                return match ureq::request(&method, "https://www.google.com/foo").call() {
+                return match ureq::request(&method, &url).call() {
                     Ok(response) => Ok(response),
                     Err(ureq::Error::Status(code, response)) => Err(ResponseError {
                         no_endpoint: false,
@@ -66,7 +66,7 @@ impl<P> Server<'_, P> {
                         no_endpoint: false,
                         status_code: None,
                         status_text: None,
-                        url: "foo".to_string(),
+                        url,
                     }),
                 };
             }
@@ -75,7 +75,7 @@ impl<P> Server<'_, P> {
             no_endpoint: true,
             status_code: None,
             status_text: None,
-            url: "https://www.google.com".to_string(),
+            url,
         });
 
         //return ureq::ErrorKind::InvalidUrl(format!("No endpoint found with URI: {}", uri))
@@ -92,21 +92,33 @@ mod test {
     use super::*;
 
     #[test]
-    fn new_server_normalizes_base_url() {
+    fn new_server_normalizes_base_url_leaves_slashes_alone() {
         let server = Server::new(
-            "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
+            "https://papi.dev.ocdvlp.com".to_string(),
             vec![Endpoint::new(
                 "/opportunities",
                 "A test endpoint",
                 HashMap::from([("GET", Some("x".to_string()))]),
             )],
         );
-        assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com/opportunities");
+        assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com");
+    }
+    #[test]
+    fn new_server_normalizes_base_url_removes_trailing_slash() {
+        let server = Server::new(
+            "https://papi.dev.ocdvlp.com/".to_string(),
+            vec![Endpoint::new(
+                "/opportunities",
+                "A test endpoint",
+                HashMap::from([("GET", Some("x".to_string()))]),
+            )],
+        );
+        assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com");
     }
     #[test]
     fn request_succeeds() {
         let server = Server::new(
-            "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
+            "https://papi.dev.ocdvlp.com".to_string(),
             vec![Endpoint::new(
                 "/opportunities/",
                 "A test endpoint",
@@ -122,14 +134,14 @@ mod test {
     #[test]
     fn request_fails_bad_status_code() {
         let server = Server::new(
-            "https://papi.dev.ocdvlp.com/opportunities/".to_string(),
+            "https://papi.dev.ocdvlp.com".to_string(),
             vec![Endpoint::new(
-                "/opportunities/",
+                "/foo/",
                 "A test endpoint",
                 HashMap::from([("GET", Some("x".to_string()))]),
             )],
         );
-        match server.request("GET", String::from("/opportunities/")) {
+        match server.request("GET", String::from("/foo/")) {
             Ok(_) => panic!("request should have failed"),
             Err(err) => {
                 assert_eq!(err.no_endpoint, false);
