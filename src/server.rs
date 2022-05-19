@@ -64,6 +64,8 @@ impl<P> Server<'_, P> {
                         status_text: Some(response.status_text().to_string()),
                         url: response.get_url().to_string(),
                     }),
+                    // Probably a transport error. Didn't even make it to the
+                    // server.
                     _ => Err(ResponseError {
                         no_endpoint: false,
                         status_code: None,
@@ -73,6 +75,8 @@ impl<P> Server<'_, P> {
                 };
             }
         }
+        // The endpoint isn't even defined on our
+        // server object.
         return Err(ResponseError {
             no_endpoint: true,
             status_code: None,
@@ -80,11 +84,7 @@ impl<P> Server<'_, P> {
             url,
         });
 
-        //return ureq::ErrorKind::InvalidUrl(format!("No endpoint found with URI: {}", uri))
     }
-    // pub fn get(&self, uri: String) -> String {
-    //     self.request(Method::GET, uri)
-    // }
 }
 
 #[cfg(test)]
@@ -131,7 +131,7 @@ mod test {
                 .body("ohi");
         });
         println!("{}", mock_server.url("/opportunities/"));
-        
+
 
         let server = Server::new(
             "https://papi.dev.ocdvlp.com".to_string(),
