@@ -9,3 +9,6 @@ edition = "2021"
 regex = "1.5"
 ureq = { version = "2.4.0", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+httpmock = "0.6"

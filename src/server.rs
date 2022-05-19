@@ -3,6 +3,8 @@ use crate::functions;
 use serde::Deserialize;
 use std::{collections::HashMap, fmt};
 use ureq;
+use httpmock::prelude::*;
+
 pub struct Server<'a, P> {
     pub base_url: String,
     pub endpoints: Vec<Endpoint<'a, P>>,
@@ -117,6 +119,20 @@ mod test {
     }
     #[test]
     fn request_succeeds() {
+
+        let mock_server = MockServer::start();
+
+        // Create a mock on the server.
+        let hello_mock = mock_server.mock(|when, then| {
+            when.method(GET)
+                .path("/opportunities/");
+            then.status(200)
+                .header("content-type", "application/json")
+                .body("ohi");
+        });
+        println!("{}", mock_server.url("/opportunities/"));
+        
+
         let server = Server::new(
             "https://papi.dev.ocdvlp.com".to_string(),
             vec![Endpoint::new(
