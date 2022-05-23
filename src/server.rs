@@ -3,8 +3,9 @@ use crate::functions;
 use serde::Deserialize;
 use std::{collections::HashMap, fmt};
 use ureq;
-use httpmock::prelude::*;
 
+/// Server that collects endpoints, each with
+/// a payload.
 pub struct Server<'a, P> {
     pub base_url: String,
     pub endpoints: Vec<Endpoint<'a, P>>,
@@ -83,15 +84,14 @@ impl<P> Server<'_, P> {
             status_text: None,
             url,
         });
-
     }
 }
 
 #[cfg(test)]
 mod test {
-    use ureq::serde_json;
 
     use super::*;
+    use httpmock::prelude::*;
 
     #[test]
     fn new_server_normalizes_base_url_leaves_slashes_alone() {
@@ -119,22 +119,16 @@ mod test {
     }
     #[test]
     fn request_succeeds() {
-
         let mock_server = MockServer::start();
-
         // Create a mock on the server.
-        let hello_mock = mock_server.mock(|when, then| {
-            when.method(GET)
-                .path("/opportunities/");
+        mock_server.mock(|when, then| {
+            when.method(GET).path("/opportunities/");
             then.status(200)
                 .header("content-type", "application/json")
                 .body("ohi");
         });
-        println!("{}", mock_server.url("/opportunities/"));
-
-
         let server = Server::new(
-            "https://papi.dev.ocdvlp.com".to_string(),
+            mock_server.base_url(),
             vec![Endpoint::new(
                 "/opportunities/",
                 "A test endpoint",
@@ -145,12 +139,17 @@ mod test {
             .request("GET", String::from("/opportunities/"))
             .unwrap();
         assert_eq!(resp.status(), 200);
-        println!("{:?}", resp.get_url());
     }
     #[test]
     fn request_fails_bad_status_code() {
+        let mock_server = MockServer::start();
+        // Create a mock on the server.
+        mock_server.mock(|when, then| {
+            when.method(GET).path("/opportunities/");
+            then.status(404).header("content-type", "application/json");
+        });
         let server = Server::new(
-            "https://papi.dev.ocdvlp.com".to_string(),
+            mock_server.base_url(),
             vec![Endpoint::new(
                 "/foo/",
                 "A test endpoint",
