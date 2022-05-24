@@ -23,6 +23,12 @@ pub struct ResponseError {
     status_text: Option<String>,
     url: String,
 }
+#[derive(Debug)]
+pub struct Response<'a> {
+    status_code: u16,
+    status_text: &'a str,
+    body: ureq::serde_json::Value
+}
 
 impl fmt::Display for ResponseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
@@ -125,7 +131,7 @@ mod test {
             when.method(GET).path("/opportunities/");
             then.status(200)
                 .header("content-type", "application/json")
-                .body("ohi");
+                .body("{\"foo\": true}");
         });
         let server = Server::new(
             mock_server.base_url(),
@@ -139,6 +145,8 @@ mod test {
             .request("GET", String::from("/opportunities/"))
             .unwrap();
         assert_eq!(resp.status(), 200);
+        let json: ureq::serde_json::Value = resp.into_json().unwrap();
+        assert_eq!(json["foo"], true);
     }
     #[test]
     fn request_fails_bad_status_code() {
