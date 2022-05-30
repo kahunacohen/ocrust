@@ -23,12 +23,6 @@ pub struct ResponseError {
     status_text: Option<String>,
     url: String,
 }
-#[derive(Debug)]
-pub struct Response<'a> {
-    status_code: u16,
-    status_text: &'a str,
-    body: ureq::serde_json::Value
-}
 
 impl fmt::Display for ResponseError {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
@@ -91,6 +85,9 @@ impl<P> Server<'_, P> {
             url,
         });
     }
+    fn get(&self, uri: String) -> Result<ureq::Response, ResponseError> {
+        self.request("GET", uri)
+    }
 }
 
 #[cfg(test)]
@@ -142,7 +139,7 @@ mod test {
             )],
         );
         let resp = server
-            .request("GET", String::from("/opportunities/"))
+            .get(String::from("/opportunities/"))
             .unwrap();
         assert_eq!(resp.status(), 200);
         let json: ureq::serde_json::Value = resp.into_json().unwrap();
