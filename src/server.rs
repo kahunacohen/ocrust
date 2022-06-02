@@ -138,9 +138,7 @@ mod test {
                 HashMap::from([("GET", Some("x".to_string()))]),
             )],
         );
-        let resp = server
-            .get(String::from("/opportunities/"))
-            .unwrap();
+        let resp = server.get(String::from("/opportunities/")).unwrap();
         assert_eq!(resp.status(), 200);
         let json: ureq::serde_json::Value = resp.into_json().unwrap();
         assert_eq!(json["foo"], true);

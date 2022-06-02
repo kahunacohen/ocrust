@@ -1,7 +1,7 @@
+mod args;
 mod endpoint;
 mod functions;
 mod server;
-mod args;
 
 use args::OcArgs;
 use clap::Parser;
