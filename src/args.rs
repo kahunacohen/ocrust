@@ -19,7 +19,7 @@ enum Method {
 }
 #[derive(Subcommand)]
 enum Commands {
-   /// Performs Papi operations for debugging and development
+    /// Performs Papi operations for debugging and development
     Papi {
         path: String,
         #[clap(short, long, arg_enum, default_value_t = Method::GET)]
@@ -28,7 +28,5 @@ enum Commands {
         verbose: bool,
     },
     /// Performs tasks related to rollbar monitoring
-    Rollbar {
-       foo: String
-    }
+    Rollbar { foo: String },
 }
