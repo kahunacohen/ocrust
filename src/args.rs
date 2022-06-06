@@ -1,14 +1,14 @@
 use clap::{ArgEnum, Parser, Subcommand};
 
-#[derive(Parser)]
+#[derive(Debug, Parser)]
 #[clap(about, version, author)]
 /// Performs debugging and operational related OurCrowd tasks
 pub struct OcArgs {
     #[clap(subcommand)]
-    command: Commands,
+    pub command: Commands,
 }
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
-enum Method {
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, ArgEnum)]
+pub enum Method {
     DELETE,
     GET,
     HEAD,
@@ -17,8 +17,8 @@ enum Method {
     POST,
     PUT,
 }
-#[derive(Subcommand)]
-enum Commands {
+#[derive(Debug, Subcommand)]
+pub enum Commands {
     /// Performs Papi operations for debugging and development
     Papi {
         path: String,
