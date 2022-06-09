@@ -1,9 +1,9 @@
 use std::collections::HashMap;
 
-use crate::endpoint::Endpoint;
+use crate::endpoint::{Endpoint, Payload};
 use crate::server::Server;
 
-pub fn get_server(base_url: String) -> Server<P> {
+pub fn get_server(base_url: String) -> Server<Payload> {
     Server::new(
         base_url,
         vec![Endpoint::new(
