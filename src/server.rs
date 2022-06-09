@@ -101,9 +101,9 @@ mod test {
         let server = Server::new(
             "https://papi.dev.ocdvlp.com".to_string(),
             vec![Endpoint::new(
-                "/opportunities",
-                "A test endpoint",
-                HashMap::from([("GET", Some("x".to_string()))]),
+                "/opportunities".to_string(),
+                "A test endpoint".to_string(),
+                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
             )],
         );
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com");
@@ -113,9 +113,9 @@ mod test {
         let server = Server::new(
             "https://papi.dev.ocdvlp.com/".to_string(),
             vec![Endpoint::new(
-                "/opportunities",
-                "A test endpoint",
-                HashMap::from([("GET", Some("x".to_string()))]),
+                "/opportunities".to_string(),
+                "A test endpoint".to_string(),
+                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
             )],
         );
         assert_eq!(server.base_url, "https://papi.dev.ocdvlp.com");
@@ -133,12 +133,12 @@ mod test {
         let server = Server::new(
             mock_server.base_url(),
             vec![Endpoint::new(
-                "/opportunities/",
-                "A test endpoint",
-                HashMap::from([("GET", Some("x".to_string()))]),
+                "/opportunities/".to_string(),
+                "A test endpoint".to_string(),
+                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
             )],
         );
-        let resp = server.get(String::from("/opportunities/")).unwrap();
+        let resp = server.get("/opportunities/".to_string()).unwrap();
         assert_eq!(resp.status(), 200);
         let json: ureq::serde_json::Value = resp.into_json().unwrap();
         assert_eq!(json["foo"], true);
@@ -154,9 +154,9 @@ mod test {
         let server = Server::new(
             mock_server.base_url(),
             vec![Endpoint::new(
-                "/foo/",
-                "A test endpoint",
-                HashMap::from([("GET", Some("x".to_string()))]),
+                "/foo/".to_string(),
+                "A test endpoint".to_string(),
+                HashMap::from([("GET".to_string(), Some("x".to_string()))]),
             )],
         );
         match server.request("GET", String::from("/foo/")) {
