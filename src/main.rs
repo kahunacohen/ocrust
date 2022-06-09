@@ -2,6 +2,7 @@ mod args;
 mod endpoint;
 mod functions;
 mod server;
+mod papi;
 
 use args::{Commands, OcArgs};
 use clap::Parser;
@@ -14,6 +15,7 @@ fn main() {
             println!("method: {:?}", method);
             println!("verbose: {:?}", verbose);
             println!("path: {:?}", path);
+
         },
         _ => println!("damn")
     }
