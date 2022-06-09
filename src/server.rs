@@ -6,9 +6,9 @@ use ureq;
 
 /// Server that collects endpoints, each with
 /// a payload.
-pub struct Server<'a, P> {
+pub struct Server<P> {
     pub base_url: String,
-    pub endpoints: Vec<Endpoint<'a, P>>,
+    pub endpoints: Vec<Endpoint<P>>,
 }
 
 /// A custom response error that wraps ureq responses and
@@ -44,7 +44,7 @@ impl fmt::Display for ResponseError {
     }
 }
 
-impl<P> Server<'_, P> {
+impl<P> Server<P> {
     pub fn new(base_url: String, endpoints: Vec<Endpoint<P>>) -> Server<P> {
         Server {
             base_url: functions::normalize_url(base_url),

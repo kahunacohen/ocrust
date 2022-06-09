@@ -24,33 +24,33 @@ pub struct Payload {
 /// of payload. So the methods field is a vector
 /// of hashmaps that map HTTP methods, "GET" etc. to
 /// a payload.
-pub struct Endpoint<'a, P> {
-    pub description: &'a str,
-    pub methods: HashMap<&'a str, Option<P>>,
+pub struct Endpoint<P> {
+    pub description: String,
+    pub methods: HashMap<String, Option<P>>,
     pub uri: String,
     url: String,
 }
-impl<P> Endpoint<'_, P> {
+impl<P> Endpoint<P> {
     /// Creates a new endpoint. E.g.:
     /// ```
     /// // An endpoint representing the URI `/foo`
     /// //implementing `GET` with no payload.
     ///  let e: Endpoint<Payload> = Endpoint::new(
-    ///    "/foo",
+    ///    "/foo".to_string(),
     ///    "A test endpoint",
     ///    HashMap::from([("GET", None)])
     ///  );
     /// ```
-    pub fn new<'a>(
-        uri: &'a str,
-        description: &'a str,
-        methods: HashMap<&'a str, Option<P>>,
-    ) -> Endpoint<'a, P> {
+    pub fn new(
+        uri: String,
+        description: String,
+        methods: HashMap<String, Option<P>>,
+    ) -> Endpoint<P> {
         let re = Regex::new(r"^/|/$").unwrap();
         Endpoint {
             description,
             methods,
-            uri: format!("/{}/", re.replace_all(uri, "")),
+            uri: format!("/{}/", re.replace_all(&uri, "")),
             url: "https://www.google.com".to_string(),
         }
     }
@@ -66,38 +66,56 @@ mod test {
 
     #[test]
     fn endpoint_handles_leading_slash() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("/foo", "A test endpoint", HashMap::from([("GET", None)]));
-        assert_eq!(e.uri, "/foo/");
+        let e: Endpoint<Payload> = Endpoint::new(
+            "/foo".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
+        assert_eq!(e.uri, "/foo/".to_string());
     }
     #[test]
     fn endpoint_handles_trailing_slash() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("/foo", "A test endpoint", HashMap::from([("GET", None)]));
+        let e: Endpoint<Payload> = Endpoint::new(
+            "/foo".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
         assert_eq!(e.uri, "/foo/");
     }
     #[test]
     fn endpoint_handles_existing_leading_trailing_slash() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("/foo/", "A test endpoint", HashMap::from([("GET", None)]));
-        assert_eq!(e.uri, "/foo/");
+        let e: Endpoint<Payload> = Endpoint::new(
+            "/foo/".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
+        assert_eq!(e.uri, "/foo/".to_string());
     }
     #[test]
     fn endpoint_handles_no_slashes() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("foo", "A test endpoint", HashMap::from([("GET", None)]));
-        assert_eq!(e.uri, "/foo/");
+        let e: Endpoint<Payload> = Endpoint::new(
+            "foo".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
+        assert_eq!(e.uri, "/foo/".to_string());
     }
     #[test]
     fn implements_method() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("foo", "A test endpoint", HashMap::from([("GET", None)]));
+        let e: Endpoint<Payload> = Endpoint::new(
+            "foo".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
         assert_eq!(e.implements_method("GET"), true);
     }
     #[test]
     fn doesnt_implement_method() {
-        let e: Endpoint<Payload> =
-            Endpoint::new("foo", "A test endpoint", HashMap::from([("GET", None)]));
+        let e: Endpoint<Payload> = Endpoint::new(
+            "foo".to_string(),
+            "A test endpoint".to_string(),
+            HashMap::from([("GET".to_string(), None)]),
+        );
         assert_eq!(e.implements_method("POST"), false);
     }
 }
