@@ -57,7 +57,10 @@ impl<P> Server<P> {
             // Interate through server's endpoints and only make request if endpoint
             // exists.
             if uri == endpoint.uri {
-                return match ureq::request(&method, &url).call() {
+                return match ureq::request(&method.to_uppercase(), &url)
+                    .set("Content-Type", "application/json; charset=utf-8")
+                    .call()
+                {
                     Ok(response) => Ok(response),
                     Err(ureq::Error::Status(code, response)) => Err(ResponseError {
                         no_endpoint: false,

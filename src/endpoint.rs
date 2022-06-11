@@ -16,7 +16,7 @@ use crate::functions;
 /// );
 /// ```
 pub struct Payload {
-    data: Option<String>,
+    pub data: Option<String>,
 }
 
 /// Represents an API endpoint. The

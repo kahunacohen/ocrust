@@ -9,7 +9,6 @@ use args::{Commands, Method, OcArgs};
 use clap::Parser;
 use std::process::exit;
 
-
 fn main() {
     let args = OcArgs::parse();
     match args.command {
@@ -27,11 +26,11 @@ fn main() {
                 Ok(_) => println!("Succeeded!"),
                 Err(err) => {
                     if err.no_endpoint {
-                        eprintln!("Error: {}", err);
+                        eprintln!("Error: no endpoint defined for: '{}'", err.url);
                         std::process::exit(1);
                     }
                     println!("{:?}", err)
-                },
+                }
             }
         }
         _ => println!("damn"),
