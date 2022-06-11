@@ -8,6 +8,7 @@ use crate::papi::get_server;
 use args::{Commands, Method, OcArgs};
 use clap::Parser;
 use std::process::exit;
+use ureq::serde_json::to_string_pretty;
 
 fn main() {
     let args = OcArgs::parse();
@@ -23,7 +24,10 @@ fn main() {
             let server = get_server("https://papi.ourcrowd.com".to_string());
 
             match server.request("get", path) {
-                Ok(_) => println!("Succeeded!"),
+                Ok(response) => {
+                    let json: ureq::serde_json::Value = response.into_json().unwrap();
+                    println!("{}", to_string_pretty(&json).unwrap());
+                },
                 Err(err) => {
                     if err.no_endpoint {
                         eprintln!("Error: no endpoint defined for: '{}'", err.url);
