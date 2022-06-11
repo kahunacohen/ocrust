@@ -18,10 +18,10 @@ pub struct Server<P> {
 pub struct ResponseError {
     // As opposed to a 404, this means the endpoint doesn't exist
     // in the server instance.
-    no_endpoint: bool,
-    status_code: Option<u16>,
-    status_text: Option<String>,
-    url: String,
+    pub no_endpoint: bool,
+    pub status_code: Option<u16>,
+    pub status_text: Option<String>,
+    pub url: String,
 }
 
 impl fmt::Display for ResponseError {
@@ -51,7 +51,7 @@ impl<P> Server<P> {
             endpoints,
         }
     }
-    fn request(&self, method: &str, uri: String) -> Result<ureq::Response, ResponseError> {
+    pub fn request(&self, method: &str, uri: String) -> Result<ureq::Response, ResponseError> {
         let url = format!("{}{}", self.base_url, uri);
         for endpoint in &self.endpoints {
             // Interate through server's endpoints and only make request if endpoint
@@ -85,7 +85,7 @@ impl<P> Server<P> {
             url,
         });
     }
-    fn get(&self, uri: String) -> Result<ureq::Response, ResponseError> {
+    pub fn get(&self, uri: String) -> Result<ureq::Response, ResponseError> {
         self.request("GET", uri)
     }
 }
