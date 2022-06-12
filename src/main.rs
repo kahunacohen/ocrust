@@ -18,12 +18,12 @@ fn main() {
             verbose,
             path,
         } => {
-            println!("method: {:?}", method);
-            println!("verbose: {:?}", verbose);
-            println!("path: {:?}", path);
+            // println!("method: {:?}", method);
+            // println!("verbose: {:?}", verbose);
+            // println!("path: {:?}", path);
             let server = get_server("https://papi.ourcrowd.com".to_string());
 
-            match server.request("get", path) {
+            match server.request(&method.to_string(), path) {
                 Ok(response) => {
                     let json: ureq::serde_json::Value = response.into_json().unwrap();
                     println!("{}", to_string_pretty(&json).unwrap());

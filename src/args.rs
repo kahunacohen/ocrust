@@ -1,3 +1,5 @@
+use std::fmt;
+
 use clap::{ArgEnum, Parser, Subcommand};
 
 #[derive(Debug, Parser)]
@@ -16,6 +18,12 @@ pub enum Method {
     PATCH,
     POST,
     PUT,
+}
+
+impl fmt::Display for Method {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self)
+    }
 }
 #[derive(Debug, Subcommand)]
 pub enum Commands {
