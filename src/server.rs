@@ -56,6 +56,8 @@ impl<P> Server<P> {
         for endpoint in &self.endpoints {
             // Interate through server's endpoints and only make request if endpoint
             // exists.
+            print!("uri: {}\n", uri);
+            print!("endoint:{}\n", endpoint.uri);
             if uri == endpoint.uri {
                 return match ureq::request(&method.to_uppercase(), &url)
                     .set("Content-Type", "application/json; charset=utf-8")

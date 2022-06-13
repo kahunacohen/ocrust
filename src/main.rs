@@ -9,6 +9,8 @@ use args::{Commands, Method, OcArgs};
 use clap::Parser;
 use std::process::exit;
 use ureq::serde_json::to_string_pretty;
+use regex::Regex;
+
 
 fn main() {
     let args = OcArgs::parse();
@@ -22,8 +24,9 @@ fn main() {
             // println!("verbose: {:?}", verbose);
             // println!("path: {:?}", path);
             let server = get_server("https://papi.ourcrowd.com".to_string());
-
-            match server.request(&method.to_string(), path) {
+            let re = Regex::new(r"^/|/$").unwrap();
+            let normalized_path = format!("/{}/", re.replace_all(&path, ""));
+            match server.request(&method.to_string(), normalized_path) {
                 Ok(response) => {
                     let json: ureq::serde_json::Value = response.into_json().unwrap();
                     println!("{}", to_string_pretty(&json).unwrap());
