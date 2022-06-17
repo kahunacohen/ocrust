@@ -6,10 +6,12 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+anyhow = "1.0.57"
 clap = { version = "3.1.18", features = ["derive"] }
 regex = "1.5"
 serde = { version = "1", features = ["derive"] }
 ureq = { version = "2.4.0", features = ["json", "charset"] }
+thiserror = "1.0.31"
 
 [dev-dependencies]
 httpmock = "0.6"

@@ -1,8 +1,9 @@
 use crate::endpoint::Endpoint;
 use crate::functions;
 use serde::Deserialize;
-use std::{collections::HashMap, fmt};
+use std::{collections::HashMap, error::{self, Error}, fmt};
 use ureq;
+use thiserror;
 
 /// Server that collects endpoints, each with
 /// a payload.
@@ -14,7 +15,7 @@ pub struct Server<P> {
 /// A custom response error that wraps ureq responses and
 /// the possiblity that a url can be requested that is not a defined
 /// endpoint on the server instance.
-#[derive(Debug)]
+#[derive(Debug, thiserror::Error)]
 pub struct ResponseError {
     // As opposed to a 404, this means the endpoint doesn't exist
     // in the server instance.
