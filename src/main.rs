@@ -13,8 +13,7 @@ use endpoint::Payload;
 use regex::Regex;
 use ureq::serde_json::to_string_pretty;
 
-fn process_json(server: server::Server<Payload>, method: Method, normalized_path: String) -> anyhow::Result<()> {
-    let response = server.request(&method.to_string(), normalized_path)?;
+fn process_json(response: ureq::Response) -> anyhow::Result<()> {
     let json: ureq::serde_json::Value = response.into_json()?;
     println!("{}", to_string_pretty(&json)?);
     Ok(())
@@ -35,9 +34,8 @@ fn main() -> () {
             let normalized_path = format!("/{}/", re.replace_all(&path, ""));
             match server.request(&method.to_string(), normalized_path) {
                 Ok(response) => {
-                    if let Err(error) = process_json(server, method, normalized_path) {
+                    if let Err(error) = process_json(response) {
                         eprintln!("Error: {}", error);
-                        
                     } else {
                         
                     }
