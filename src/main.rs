@@ -13,12 +13,12 @@ use endpoint::Payload;
 use regex::Regex;
 use ureq::serde_json::to_string_pretty;
 
-fn process_json(response: ureq::Response) -> anyhow::Result<()> {
+fn print_json_response(response: ureq::Response) -> anyhow::Result<()> {
     let json: ureq::serde_json::Value = response.into_json()?;
     println!("{}", to_string_pretty(&json)?);
     Ok(())
 }
-fn main() -> () {
+fn main()  {
     let args = OcArgs::parse();
     match args.command {
         Commands::Papi {
@@ -34,25 +34,25 @@ fn main() -> () {
             let normalized_path = format!("/{}/", re.replace_all(&path, ""));
             match server.request(&method.to_string(), normalized_path) {
                 Ok(response) => {
-                    if let Err(error) = process_json(response) {
+                    if let Err(error) = print_json_response(response) {
                         eprintln!("Error: {}", error);
-                    } else {
-                        
-                    }
+                        exit(1);
+                    } 
                 }
                 Err(err) => {
                     if err.no_endpoint {
                         eprintln!("Error: no endpoint defined for: '{}'", err.url);
+                        exit(1);
                         
                     }
                     eprintln!("{:?}", err);
-                    
+                    exit(1);
                 }
             }
         }
         _ => {
-            println!("something completely unexpected happened");
-            
+            eprint!("something completely unexpected happened");
+            exit(1);
         }
     }
 }
