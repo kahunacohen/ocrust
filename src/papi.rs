@@ -13,6 +13,11 @@ pub fn get_server(base_url: String) -> Server<Payload> {
                 HashMap::from([("GET".to_string(), None)]),
             ),
             Endpoint::new(
+                "/user/getabtest/".to_string(),
+                "Gets a/b test varients".to_string(),
+                HashMap::from([("GET".to_string(), None)]),
+            ),
+            Endpoint::new(
                 "/opportunities/".to_string(),
                 "A test endpoint".to_string(),
                 HashMap::from([(

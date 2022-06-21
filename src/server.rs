@@ -1,9 +1,13 @@
 use crate::endpoint::Endpoint;
 use crate::functions;
 use serde::Deserialize;
-use std::{collections::HashMap, error::{self, Error}, fmt};
-use ureq;
+use std::{
+    collections::HashMap,
+    error::{self, Error},
+    fmt,
+};
 use thiserror;
+use ureq;
 
 /// Server that collects endpoints, each with
 /// a payload.
@@ -57,8 +61,6 @@ impl<P> Server<P> {
         for endpoint in &self.endpoints {
             // Interate through server's endpoints and only make request if endpoint
             // exists.
-            print!("uri: {}\n", uri);
-            print!("endoint:{}\n", endpoint.uri);
             if uri == endpoint.uri {
                 return match ureq::request(&method.to_uppercase(), &url)
                     .set("Content-Type", "application/json; charset=utf-8")
